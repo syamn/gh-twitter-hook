@@ -17,6 +17,7 @@
     define('TW_API_UPDATE', 'https://api.twitter.com/1.1/statuses/update.json');
     
     // Bitly settings
+    define('USE_BITLY', false);
     define('BITLY_ID', '');
     define('BITLY_APIKEY', '');
 
@@ -88,8 +89,12 @@
         debug("Building update message");
 
         // Tweet
-        $shortUrl = shortenUrl($commit_url);
-        if (!$shortUrl) $shortUrl = $commit_url;
+        if (USE_BITLY){
+            $shortUrl = shortenUrl($commit_url);
+        	if (!$shortUrl) $shortUrl = $commit_url;
+        }else{
+        	$shortUrl = $commit_url;
+        }
         
         $tweet = "[".$repo_name."] ".$shortUrl." ".$committer_username." - ".trim($commit_msg);
         if (mb_strlen($tweet) > 140){
