@@ -22,7 +22,9 @@
     define('BITLY_ID', '');
     define('BITLY_APIKEY', '');
 
-    // github IPs
+    // Github settings
+    define('CHECK_REPO_OWNER', false);
+    $ALLOW_REPO_OWNER = array('owner_name_here', 'name_here', 'name_here');
     $GITHUB_IPS = array('207.97.227.253', '50.57.128.197', '108.171.174.178');
     // End - Configuration
 
@@ -73,10 +75,19 @@
     /* Repository */
     $repo_name = $payload->repository->name;
     $repo_url = $payload->repository->url;
+    $repo_owner = $payload->repository->owner->name;
 
     /* Etc */
     $ref = $payload->ref; // check pushed to master? if(=== 'refs/heads/master'){}
     $compare_url = $payload->compare;
+    
+    // Check repo owner
+    if (CHECK_REPO_OWNER){
+        if (!in_array($repo_owner, $ALLOW_REPO_OWNER)){
+            addLogLine("Error: This repo owner '".$repo_owner."' not contains to allows list");
+            exit;
+        }
+    }
 
     debug("Starting foreach loop");
     foreach($payload->commits as $commit) {
