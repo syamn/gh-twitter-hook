@@ -15,6 +15,10 @@
     define('ACCESS_TOKEN_SECRET', '');
 
     define('TW_API_UPDATE', 'https://api.twitter.com/1.1/statuses/update.json');
+    
+    // Bitly settings
+    define('BITLY_ID', '');
+    define('BITLY_APIKEY', '')
 
     // github IPs
     $GITHUB_IPS = array('207.97.227.253', '50.57.128.197', '108.171.174.178');
@@ -84,7 +88,10 @@
         debug("Building update message");
 
         // Tweet
-        $tweet = "[".$repo_name."] ".$commit_url." ".$committer_username." - ".trim($commit_msg);
+        $shortUrl = shortenUrl($commit_url);
+        if (!$shortUrl) $shortUrl = $commit_url;
+        
+        $tweet = "[".$repo_name."] ".$shortUrl." ".$committer_username." - ".trim($commit_msg);
         if (mb_strlen($tweet) > 140){
             $tweet = mb_substr($tweet, 0, 138)."..";
         }
@@ -110,6 +117,27 @@
     function debug($line){
         if (DEBUG){
             file_put_contents(LAST_LOG, "[DEBUG] ".$line.NEWLINE, FILE_APPEND);
+        }
+    }
+    function shortenUrl($url){
+        // use bit.ly
+        $url = "http://api.bit.ly/v3/shorten?"
+                ."login=".BITLY_ID
+                ."&apiKey=".BITLY_APIKEY
+                ."&longUrl=".urlencode($url)
+                ."&format=xml";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+        $data = curl_exec($ch);
+        curl_close($ch);
+
+        $data_obj = simplexml_load_string($data);
+        if((int)$data_obj->status_code == 200){
+            return (string)$data_obj->data->url;
+        }else{
+            return FALSE;
         }
     }
 ?>
