@@ -6,7 +6,7 @@
     // Logging settings
     define('NEWLINE', "\n");
     define('LAST_LOG', "last_github_hook.log");
-    define('DEBUG', true);
+    define('DEBUG', false);
 
     // Twitter settings
     define('CONSUMER_KEY', '');
