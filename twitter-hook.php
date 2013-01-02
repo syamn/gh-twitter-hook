@@ -18,7 +18,7 @@
     
     // Bitly settings
     define('BITLY_ID', '');
-    define('BITLY_APIKEY', '')
+    define('BITLY_APIKEY', '');
 
     // github IPs
     $GITHUB_IPS = array('207.97.227.253', '50.57.128.197', '108.171.174.178');
