@@ -4,6 +4,7 @@
     define('TWITTEROAUTH_PATH', '/lib/twitteroauth.php');
 
     // Logging settings
+    define('USE_LASTLOG', true);
     define('NEWLINE', "\n");
     define('LAST_LOG', "last_github_hook.log");
     define('DEBUG', false);
@@ -113,14 +114,16 @@
 
     /****/
     function addLogLine($line, $newFile = false){
-        if ($newFile){
-            file_put_contents(LAST_LOG, $line.NEWLINE);
-        }else{
-            file_put_contents(LAST_LOG, $line.NEWLINE, FILE_APPEND);
+        if (USE_LASTLOG){
+            if ($newFile){
+                file_put_contents(LAST_LOG, $line.NEWLINE);
+            }else{
+                file_put_contents(LAST_LOG, $line.NEWLINE, FILE_APPEND);
+            }
         }
     }
     function debug($line){
-        if (DEBUG){
+        if (USE_LASTLOG && DEBUG){
             file_put_contents(LAST_LOG, "[DEBUG] ".$line.NEWLINE, FILE_APPEND);
         }
     }
